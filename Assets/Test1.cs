@@ -10,14 +10,44 @@ public class Test1 : MonoBehaviour
     void Start()
     {
         textMesh = GetComponent<TextMeshProUGUI>();
+        inputField.onValidateInput += ValidateDecimalInput;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (inputField.text.Length == 0)
+        {
+            textMesh.text = "";
             return;
-        int number = int.Parse(inputField.text);
-        textMesh.text = number.ToString();
+        }
+
+        // Try to parse the input text to a float
+        if (float.TryParse(inputField.text.Replace(',', '.'), out float number))
+        {
+            textMesh.text = number.ToString();
+        }
+        else
+        {
+            Debug.LogWarning("Input string was not in a correct format.");
+            textMesh.text = "Invalid input";
+        }
+    }
+
+    private char ValidateDecimalInput(string text, int charIndex, char addedChar)
+    {
+        // Allow digits
+        if (char.IsDigit(addedChar))
+        {
+            return addedChar;
+        }
+
+        // Allow one comma or point for decimal separator
+        if ((addedChar == ',' || addedChar == '.') && !text.Contains(",") && !text.Contains("."))
+        {
+            return addedChar;
+        }
+
+        // Otherwise, reject the input
+        return '\0';
     }
 }
