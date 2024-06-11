@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 
@@ -10,21 +11,30 @@ public class Test1 : MonoBehaviour
     void Start()
     {
         textMesh = GetComponent<TextMeshProUGUI>();
+        // Set up the validation callback for the input field
         inputField.onValidateInput += ValidateDecimalInput;
+
+        // Set up a listener for when the input field text changes
+        inputField.onValueChanged.AddListener(OnInputValueChanged);
     }
 
-    void Update()
+    // This method is called whenever the input field text changes
+    private void OnInputValueChanged(string input)
     {
-        if (inputField.text.Length == 0)
+        if (string.IsNullOrEmpty(input))
         {
             textMesh.text = "";
             return;
         }
 
-        // Try to parse the input text to a float
-        if (float.TryParse(inputField.text.Replace(',', '.'), out float number))
+        // Replace comma with dot to handle decimal values consistently
+        string formattedInput = input.Replace(',', '.');
+
+        // Try to parse the input text to a float using InvariantCulture to handle the dot as decimal separator
+        if (float.TryParse(formattedInput, NumberStyles.Float, CultureInfo.InvariantCulture, out float number))
         {
-            textMesh.text = number.ToString();
+            // Convert the float back to a string and display it
+            textMesh.text = number.ToString(CultureInfo.InvariantCulture);
         }
         else
         {
@@ -33,6 +43,7 @@ public class Test1 : MonoBehaviour
         }
     }
 
+    // This method is used to validate the input characters
     private char ValidateDecimalInput(string text, int charIndex, char addedChar)
     {
         // Allow digits
@@ -41,7 +52,7 @@ public class Test1 : MonoBehaviour
             return addedChar;
         }
 
-        // Allow one comma or point for decimal separator
+        // Allow one comma or dot for decimal separator
         if ((addedChar == ',' || addedChar == '.') && !text.Contains(",") && !text.Contains("."))
         {
             return addedChar;
