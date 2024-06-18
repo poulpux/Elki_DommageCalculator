@@ -4,11 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class XPManager : MonoSingleton<XPManager> 
-{
-    public UnityEvent<string> gainXpEvent = new UnityEvent<string>();
-}
-
 [Serializable]
 public class CharacterXP
 {
