@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class Test1 : MonoBehaviour
 {
-    TextMeshProUGUI textMesh;
+    TextMeshProUGUI result;
     [SerializeField] TMP_InputField inputField;
     void Start()
     {
-        textMesh = GetComponent<TextMeshProUGUI>();
+        result = GetComponent<TextMeshProUGUI>();
         // Set up the validation callback for the input field
         inputField.onValidateInput += ValidateDecimalInput;
 
@@ -23,7 +23,7 @@ public class Test1 : MonoBehaviour
     {
         if (string.IsNullOrEmpty(input))
         {
-            textMesh.text = "";
+            result.text = "";
             return;
         }
 
@@ -34,12 +34,12 @@ public class Test1 : MonoBehaviour
         if (float.TryParse(formattedInput, NumberStyles.Float, CultureInfo.InvariantCulture, out float number))
         {
             // Convert the float back to a string and display it
-            textMesh.text = number.ToString(CultureInfo.InvariantCulture);
+            result.text = number.ToString(CultureInfo.InvariantCulture);
         }
         else
         {
             Debug.LogWarning("Input string was not in a correct format.");
-            textMesh.text = "Invalid input";
+            result.text = "Invalid input";
         }
     }
 
